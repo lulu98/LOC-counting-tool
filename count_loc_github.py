@@ -29,7 +29,7 @@ if __name__ == '__main__':
         print("You need to enter a user name of a GitHub account!")
         exit(1)
     user_name = sys.argv[1]
-    print("Analyzing Github repositories of user {}".format(user_name))
+    print("Analyzing Github repositories of user {}.".format(user_name))
     clone_dir = os.path.join(os.getcwd(),"temp")
     if os.path.exists(clone_dir):
         subprocess.call(("rm -rf {}").format(clone_dir),shell=True)
@@ -40,14 +40,16 @@ if __name__ == '__main__':
             "repos":url
         }
         total = 0
-        Repo.clone_from(url, "./temp")
+        Repo.clone_from(url, clone_dir)
         for extension in file_extensions:
             try:
-                loc = subprocess.check_output(("cd {} && find ./ -type f -name '*." + extension + "' | xargs wc -l | grep 'total' | sed -e 's/\<total\>//g'").format(os.path.join(os.getcwd(),"temp")),shell=True)
-                if loc=='':
+                #loc = subprocess.check_output(("cd {} && find {} -type f -name '*." + extension + "' | xargs wc -l | grep 'total' | sed -e 's/\<total\>//g'").format(clone_dir,clone_dir),shell=True)
+                loc = subprocess.check_output(("find {} -type f -name '*." + extension + "' | xargs wc -l").format(clone_dir,clone_dir),shell=True)
+                loc = loc.split()
+                if len(loc)==1:
                     loc = 0
-                else:
-                    loc = int(loc)
+                else: 
+                    loc = int(loc[-2])
                 total = total + loc
                 repos[extension]=loc
             except subprocess.CalledProcessError as e:
