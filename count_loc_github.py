@@ -29,6 +29,7 @@ if __name__ == '__main__':
         print("You need to enter a user name of a GitHub account!")
         exit(1)
     user_name = sys.argv[1]
+    print("Analyzing Github repositories of user {}".format(user_name))
     clone_dir = os.path.join(os.getcwd(),"temp")
     if os.path.exists(clone_dir):
         subprocess.call(("rm -rf {}").format(clone_dir),shell=True)
@@ -57,14 +58,15 @@ if __name__ == '__main__':
         repos["total"]=total
         repositories.append(repos)
         subprocess.call(("rm -rf {}").format(os.path.join(os.getcwd(),"temp")),shell=True)
-    print("---------------------------------------------------------------------------")
+    print("\n---------------------------------------------------------------------------\n")
+    print("User account: {}\n".format(user_name))
     for repos in repositories:
         print("Statistics for Repository: {}".format(repos["repos"]))
         for extension in file_extensions:
             print(".{} files:\t\t\t {} LOCs".format(extension,repos[extension]))
         print("Total LOCs:\t\t\t {} LOCs".format(repos["total"]))
-        print("\n")
-    print("---------------------------------------------------------------------------")
+        print("")
+    print("---------------------------------------------------------------------------\n")
     for extension in file_extensions:
         print("Total *.{} files:\t\t\t {} LOCs".format(extension,sum(x[extension] for x in repositories)))
     print("Total LOCs:\t\t\t {} LOCs".format(sum(x["total"] for x in repositories)))
